@@ -4,6 +4,7 @@ import com.github.gradle.node.NodeExtension
 import com.github.gradle.node.npm.task.NpmTask
 import com.github.gradle.node.task.NodeTask
 import org.gradle.api.*
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.bundling.Zip
@@ -15,6 +16,14 @@ private const val INSTALL_NCC = "installNCC"
 private const val PACKAGE_WITH_NCC = "packageNodeJsDistributableWithNCC"
 
 private const val PACKAGE_EXPLODED = "packageNodeJsDistributableExploded"
+
+// hax to avoid depending on Kotlin plugin directly
+@Suppress("UNCHECKED_CAST")
+private val Task.moduleName: Provider<String> /* should be a KotlinCompile2JsTask */
+    get() = javaClass.getMethod("getModuleName").invoke(this)!! as Provider<String>
+
+private val Project.moduleNameProvider
+    get() = tasks.named("compileProductionExecutableKotlinJs").flatMap { it.moduleName }
 
 @Suppress("unused")
 class NodeJsApplicationPlugin : Plugin<Project> {
@@ -32,7 +41,8 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             val nodeModulesDir = project.jsBuildOutput.resolve("node_modules")
             inputs.dir(nodeModulesDir)
             val nodeJsApplicationExtension = project.extensions.getByType(NodeJsApplicationExtension::class.java)
-            inputs.property("moduleName", nodeJsApplicationExtension.moduleName)
+            val moduleName = nodeJsApplicationExtension.moduleName.convention(project.moduleNameProvider)
+            inputs.property("moduleName", moduleName)
             inputs.property("sourceMap", nodeJsApplicationExtension.sourceMap)
             outputs.dir(distDir)
 
@@ -45,7 +55,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
                     if (nodeJsApplicationExtension.sourceMap.get()) {
                         pw.println("require('source-map-support').install()")
                     }
-                    pw.println("require('${nodeJsApplicationExtension.moduleName.get()}')")
+                    pw.println("require('${moduleName.get()}')")
                 }
             }
         }
@@ -82,10 +92,11 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             val nodeExtension = project.extensions.getByType(NodeExtension::class.java)
             val toolDir = project.buildDir.resolve(INSTALL_NCC)
             val distDir = project.buildDir.resolve(name)
+            val moduleName = nodeJsApplicationExtension.moduleName.convention(project.moduleNameProvider)
 
             inputs.dir(project.jsBuildOutput.resolve("node_modules"))
             inputs.property("nodeVersion", nodeExtension.version.convention(""))
-            inputs.property("moduleName", nodeJsApplicationExtension.moduleName)
+            inputs.property("moduleName", moduleName)
             inputs.property("minify", nodeJsApplicationExtension.minify)
             inputs.property("v8cache", nodeJsApplicationExtension.v8cache)
             inputs.property("target", nodeJsApplicationExtension.target.convention(""))
@@ -98,7 +109,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             }
             script.set(toolDir.resolve("node_modules/@vercel/ncc/dist/ncc/cli.js"))
             args.add("build")
-            args.add(nodeJsApplicationExtension.moduleName.map {
+            args.add(moduleName.map {
                 project.jsBuildOutput.resolve("node_modules/$it/kotlin/$it.js").toString()
             })
             args.add("-o")

@@ -28,8 +28,8 @@ plugins {
 kotlin {
     js(IR) {
         nodejs {}
-        binaries.executable()
-        useCommonJs()
+      binaries.executable()
+      useCommonJs()
     }
 }
 
@@ -38,7 +38,11 @@ dependencies {
 }
 
 nodeJsApplication {
-    moduleName.set(project.name)
+  // defaults
+  minify.set(true)
+  v8cache.set(false)
+  sourceMap.set(false)
+  useNcc.set(true)
 }
 ```
 
@@ -69,7 +73,8 @@ Configure external modules that will not be included in the bundle.
 
 ### moduleName
 
-Must match the root name of the JavaScript produced by the Kotlin compiler.
+Must match the root name of the JavaScript produced by the Kotlin compiler. The plugin will try to glean this from
+the compilation task.
 
 ### useNcc
 
