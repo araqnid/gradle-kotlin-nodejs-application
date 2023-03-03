@@ -6,23 +6,23 @@ import org.gradle.api.provider.Provider
 
 fun Project.registerInstallNCCTask(name: String, accessNccVersion: Project.() -> Provider<String>) {
     tasks.register<NpmTask>(name) {
-        val toolDir = project.buildDir.resolve(name)
-        val nccScript = toolDir.resolve("node_modules/@vercel/ncc/dist/ncc/cli.js")
+        val toolDir = project.layout.buildDirectory.dir(name)
+        val nccScript = toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") }
 
         // every run of @vercel/ncc touches the v8 cache files, so we can't simply `outputs.dir(toolDir)` here
         outputs.file(nccScript)
 
-        workingDir.set(toolDir)
+        workingDir.fileProvider(toolDir.map { it.asFile })
         npmCommand.set(listOf("install"))
         args.add(project.accessNccVersion().map { "@vercel/ncc@$it" })
 
         doFirst {
             project.delete(toolDir)
-            toolDir.mkdirs()
+            toolDir.get().asFile.mkdirs()
         }
 
         doLast {
-            check(nccScript.exists()) { "npm install did not produce a @vercel/ncc executable" }
+            check(nccScript.get().asFile.exists()) { "npm install did not produce a @vercel/ncc executable" }
         }
     }
 }
