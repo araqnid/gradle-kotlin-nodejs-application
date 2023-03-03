@@ -1,6 +1,5 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
-import com.github.gradle.node.NodeExtension
 import com.github.gradle.node.task.NodeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -25,16 +24,15 @@ class PackageGithubActionPlugin : Plugin<Project> {
 
             dependsOn(INSTALL_NCC, "productionExecutableCompileSync")
 
-            val nodeExtension = project.extensions.getByType(NodeExtension::class.java)
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.projectDirectory.dir("dist")
             val moduleNameProvider = project.actionPackagingExtension.moduleName.usingDefaultFrom(project)
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
-            inputs.property("nodeVersion", nodeExtension.version.convention(""))
+            inputs.files(project.tasks.named("nodeSetup"))
             inputs.property("moduleName", moduleNameProvider)
             inputs.property("minify", project.actionPackagingExtension.minify)
-            inputs.property("target", project.actionPackagingExtension.target.convention(""))
+            inputs.property("target", project.actionPackagingExtension.target)
             inputs.property("sourceMap", project.actionPackagingExtension.sourceMap)
             inputs.property("externalModules", project.actionPackagingExtension.externalModules)
             outputs.dir(distDir)

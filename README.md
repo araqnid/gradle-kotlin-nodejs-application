@@ -43,6 +43,7 @@ nodeJsApplication {
   v8cache.set(false)
   sourceMap.set(false)
   nccVersion.set("latest")
+  target.set("")
 }
 ```
 

@@ -33,11 +33,11 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             val moduleNameProvider = project.nodeJsApplicationExtension.moduleName.usingDefaultFrom(project)
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
-            inputs.property("nodeVersion", nodeExtension.version.convention(""))
+            inputs.files(project.tasks.named("nodeSetup"))
             inputs.property("moduleName", moduleNameProvider)
             inputs.property("minify", project.nodeJsApplicationExtension.minify)
             inputs.property("v8cache", project.nodeJsApplicationExtension.v8cache)
-            inputs.property("target", project.nodeJsApplicationExtension.target.convention(""))
+            inputs.property("target", project.nodeJsApplicationExtension.target)
             inputs.property("sourceMap", project.nodeJsApplicationExtension.sourceMap)
             inputs.property("externalModules", project.nodeJsApplicationExtension.externalModules)
             outputs.dir(distDir)

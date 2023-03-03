@@ -18,5 +18,6 @@ abstract class NodeJsApplicationExtension {
         minify.convention(true)
         v8cache.convention(false)
         sourceMap.convention(false)
+        target.convention("")
     }
 }

@@ -16,5 +16,6 @@ abstract class PackageGithubActionExtension {
         minify.convention(false)
         sourceMap.convention(false)
         nccVersion.convention("latest")
+        target.convention("")
     }
 }
