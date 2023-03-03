@@ -25,7 +25,7 @@ gradlePlugin {
     website.set("https://github.com/araqnid/gradle-kotlin-nodejs-application")
 
     plugins {
-        create("nextjsSitePlugin") {
+        create("nodejsApplicationPlugin") {
             id = "org.araqnid.kotlin-nodejs-application"
             displayName = "Kotlin/JS NodeJS application"
             description = "Bundle Kotlin/JS output and dependencies into a NodeJS application"
