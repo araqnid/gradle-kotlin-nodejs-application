@@ -1,19 +1,19 @@
 # Package Kotlin/JS codebase as NodeJS application
 
 Uses Vercel's [NCC](https://github.com/vercel/ncc) tool to bundle the produced NodeJS
-executable with all its dependencies into a ZIP file. Typically, the ZIP file will
-contain `index.js`: the intent is that if unpacked into a temporary directory, you can
-then simply run `node` on that unpacked directory.
+executable with all its dependencies. There are two plugins provided:
 
-This plugin will also try to add a `.nvmrc` file to the produced archive to indicate
-which version of Node the bundle was built with.
+- `org.araqnid.kotlin-nodejs-application` will build a ZIP archive of the bundled
+  executable. This will contain an `index.js` and the contents can just be run by `node`
+  after unpacking.
+- `org.araqnid.kotlin-github-action` will write the bundled executable to the `dist`
+  directory. This can then be checked in to the repo, which is how GitHub Actions expects
+  to fetch executable scripts.
 
-The ZIP archive will automatically be built as a dependency of the `assemble` task.
-Depending on the configuration, it will add a dependency on one of the following tasks:
+When using `org.araqnid.kotlin-nodejs-application`, a `.nvmrc` file will be inserted into the produced archive to
+indicate which version of Node the bundle was built with.
 
-- `packageNodeJsDistributableWithNCC`: use NCC to bundle the app and dependencies into a single file
-- `packageNodeJsDistributableExploded`: simply copy the produced output and entire node_modules tree
-  (rarely a good idea)
+The bundling will be added as a dependency of the `assemble` task.
 
 ## Example usage
 
@@ -21,16 +21,16 @@ In `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    kotlin("js")
-    id("org.araqnid.kotlin-nodejs-application") version "0.0.1"
+  kotlin("js")
+  id("org.araqnid.kotlin-nodejs-application") version "0.0.1"
 }
 
 kotlin {
-    js(IR) {
-        nodejs {}
-      binaries.executable()
-      useCommonJs()
-    }
+  js(IR) {
+    nodejs {}
+    binaries.executable()
+    useCommonJs()
+  }
 }
 
 dependencies {
@@ -42,18 +42,18 @@ nodeJsApplication {
   minify.set(true)
   v8cache.set(false)
   sourceMap.set(false)
-  useNcc.set(true)
+  nccVersion.set("latest")
 }
 ```
 
 ## Configuration
 
-This plugin defines a `nodeJsApplication` extension to receive settings. Most of the settings
-correspond to options to pass to NCC.
+The plugins define either a `nodeJsApplication` or `actionPackaging` extension respectively to receive settings. Most of
+the settings correspond to options to pass to NCC.
 
 ### v8cache
 
-Produce a V8 cache file (save some startup time).
+Produce a V8 cache file (save some startup time) (`nodeJsApplication` only).
 
 ### minify
 
@@ -76,6 +76,6 @@ Configure external modules that will not be included in the bundle.
 Must match the root name of the JavaScript produced by the Kotlin compiler. The plugin will try to glean this from
 the compilation task.
 
-### useNcc
+### nccVersion
 
-Use NCC to bundle files (the default) as opposed to just copying the produced files and `node_modules`.
+Version of NCC to use (defaults to "latest").

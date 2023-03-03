@@ -34,5 +34,15 @@ gradlePlugin {
             tags.add("kotlin")
             tags.add("kotlinjs")
         }
+        create("githubActionPlugin") {
+            id = "org.araqnid.kotlin-github-action"
+            displayName = "Kotlin/JS GitHub Action"
+            description = "Bundle Kotlin/JS output and dependencies into a GitHub Action"
+            implementationClass = "org.araqnid.gradle.kotlin.nodejsapplication.PackageGithubActionPlugin"
+            tags.add("nodejs")
+            tags.add("github")
+            tags.add("kotlin")
+            tags.add("kotlinjs")
+        }
     }
 }
