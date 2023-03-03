@@ -1,4 +1,4 @@
-# Package Kotlin/JS codebase as NodeJS script/GitHub Action
+# Package a Kotlin/JS-based NodeJS script/GitHub Action
 
 Uses Vercel's [NCC](https://github.com/vercel/ncc) tool to bundle the produced NodeJS
 executable with all its dependencies. There are two plugins provided:
