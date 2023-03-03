@@ -2,6 +2,7 @@ package org.araqnid.gradle.kotlin.nodejsapplication
 
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 // hax to avoid depending on Kotlin plugin directly
@@ -12,3 +13,4 @@ private val Task.moduleName: Provider<String> /* should be a KotlinCompile2JsTas
 val Project.moduleNameProvider
     get() = tasks.named("compileProductionExecutableKotlinJs").flatMap { it.moduleName }
 
+fun Property<String>.usingDefaultFrom(project: Project) = convention(project.moduleNameProvider)

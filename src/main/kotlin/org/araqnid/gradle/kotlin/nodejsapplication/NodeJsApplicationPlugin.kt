@@ -28,13 +28,13 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             dependsOn(INSTALL_NCC, "productionExecutableCompileSync")
 
             val nodeExtension = project.extensions.getByType(NodeExtension::class.java)
-            val toolDir = project.buildDir.resolve(INSTALL_NCC)
-            val distDir = project.buildDir.resolve(name)
-            val moduleName = project.nodeJsApplicationExtension.moduleName.convention(project.moduleNameProvider)
+            val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
+            val distDir = project.layout.buildDirectory.dir(name)
+            val moduleNameProvider = project.nodeJsApplicationExtension.moduleName.usingDefaultFrom(project)
 
-            inputs.dir(project.jsBuildOutput.resolve("node_modules"))
+            inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
             inputs.property("nodeVersion", nodeExtension.version.convention(""))
-            inputs.property("moduleName", moduleName)
+            inputs.property("moduleName", moduleNameProvider)
             inputs.property("minify", project.nodeJsApplicationExtension.minify)
             inputs.property("v8cache", project.nodeJsApplicationExtension.v8cache)
             inputs.property("target", project.nodeJsApplicationExtension.target.convention(""))
@@ -45,13 +45,13 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             doFirst {
                 project.delete(distDir)
             }
-            script.set(toolDir.resolve("node_modules/@vercel/ncc/dist/ncc/cli.js"))
+            script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
             args.add("build")
-            args.add(moduleName.map {
-                project.jsBuildOutput.resolve("node_modules/$it/kotlin/$it.js").toString()
+            args.add(moduleNameProvider.zip(project.jsBuildOutput) { moduleName, jsBuildOutput ->
+                jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString()
             })
             args.add("-o")
-            args.add(distDir.toString())
+            args.add(distDir.map { it.asFile.toString() })
             if (project.nodeJsApplicationExtension.minify.get()) {
                 args.add("-m")
                 args.add("--license")
@@ -87,7 +87,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
                 val nodeVersion = nodeExtension.version.orNull
                 if (nodeVersion != null) {
                     logger.info("Used Node version $nodeVersion to run NCC")
-                    distDir.resolve(".nvmrc").writeText(nodeVersion)
+                    distDir.get().file(".nvmrc").asFile.writeText(nodeVersion)
                 }
             }
         }
@@ -96,7 +96,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             group = "package"
             description = "Produce app distributable archive"
 
-            destinationDirectory.set(project.buildDir)
+            destinationDirectory.set(project.layout.buildDirectory)
             archiveAppendix.set("nodejs")
             includeEmptyDirs = false
 
@@ -111,6 +111,3 @@ class NodeJsApplicationPlugin : Plugin<Project> {
 
 private val Project.nodeJsApplicationExtension
     get() = project.extensions.getByType(NodeJsApplicationExtension::class.java)
-
-private val Project.jsBuildOutput
-    get() = rootProject.buildDir.resolve("js")

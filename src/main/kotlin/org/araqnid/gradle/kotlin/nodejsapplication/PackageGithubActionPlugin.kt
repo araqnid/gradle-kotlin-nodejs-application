@@ -26,13 +26,13 @@ class PackageGithubActionPlugin : Plugin<Project> {
             dependsOn(INSTALL_NCC, "productionExecutableCompileSync")
 
             val nodeExtension = project.extensions.getByType(NodeExtension::class.java)
-            val toolDir = project.buildDir.resolve(INSTALL_NCC)
-            val distDir = project.file("dist")
-            val moduleName = project.actionPackagingExtension.moduleName.convention(project.moduleNameProvider)
+            val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
+            val distDir = project.layout.projectDirectory.dir("dist")
+            val moduleNameProvider = project.actionPackagingExtension.moduleName.usingDefaultFrom(project)
 
-            inputs.dir(project.jsBuildOutput.resolve("node_modules"))
+            inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
             inputs.property("nodeVersion", nodeExtension.version.convention(""))
-            inputs.property("moduleName", moduleName)
+            inputs.property("moduleName", moduleNameProvider)
             inputs.property("minify", project.actionPackagingExtension.minify)
             inputs.property("target", project.actionPackagingExtension.target.convention(""))
             inputs.property("sourceMap", project.actionPackagingExtension.sourceMap)
@@ -42,10 +42,10 @@ class PackageGithubActionPlugin : Plugin<Project> {
             doFirst {
                 project.delete(distDir)
             }
-            script.set(toolDir.resolve("node_modules/@vercel/ncc/dist/ncc/cli.js"))
+            script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
             args.add("build")
-            args.add(moduleName.map {
-                project.jsBuildOutput.resolve("node_modules/$it/kotlin/$it.js").toString()
+            args.add(moduleNameProvider.zip(project.jsBuildOutput) { moduleName, jsBuildOutput ->
+                jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString()
             })
             args.add("-o")
             args.add(distDir.toString())
@@ -75,6 +75,3 @@ class PackageGithubActionPlugin : Plugin<Project> {
 
 private val Project.actionPackagingExtension
     get() = extensions.getByType(PackageGithubActionExtension::class.java)
-
-private val Project.jsBuildOutput
-    get() = rootProject.buildDir.resolve("js")
