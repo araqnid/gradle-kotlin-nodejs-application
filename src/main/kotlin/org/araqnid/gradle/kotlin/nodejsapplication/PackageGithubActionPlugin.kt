@@ -47,22 +47,28 @@ class PackageGithubActionPlugin : Plugin<Project> {
             })
             args.add("-o")
             args.add(distDir.toString())
-            if (project.actionPackagingExtension.minify.get()) {
-                args.add("-m")
-                args.add("--license")
-                args.add("LICENSE.txt")
-            }
-            if (project.actionPackagingExtension.target.isPresent) {
-                args.add("--target")
-                args.add(project.actionPackagingExtension.target.get())
-            }
-            if (project.actionPackagingExtension.sourceMap.get()) {
-                args.add("-s")
-            }
-            for (module in project.actionPackagingExtension.externalModules.get()) {
-                args.add("-e")
-                args.add(module)
-            }
+            args.addAll(project.actionPackagingExtension.minify.map {
+                if (it) listOf(
+                    "-m",
+                    "--license",
+                    "LICENSE.txt"
+                ) else emptyList()
+            })
+            args.addAll(project.actionPackagingExtension.target.map {
+                if (it.isNotBlank()) listOf(
+                    "--target",
+                    it
+                ) else emptyList()
+            })
+            args.addAll(project.actionPackagingExtension.sourceMap.map { if (it) listOf("-s") else emptyList() })
+            args.addAll(project.actionPackagingExtension.externalModules.map { modules ->
+                modules.flatMap {
+                    listOf(
+                        "-e",
+                        it
+                    )
+                }
+            })
         }
 
         target.tasks.named("assemble").configure {

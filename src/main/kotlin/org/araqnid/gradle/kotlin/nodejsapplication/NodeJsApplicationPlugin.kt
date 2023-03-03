@@ -52,25 +52,29 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             })
             args.add("-o")
             args.add(distDir.map { it.asFile.toString() })
-            if (project.nodeJsApplicationExtension.minify.get()) {
-                args.add("-m")
-                args.add("--license")
-                args.add("LICENSE.txt")
-            }
-            if (project.nodeJsApplicationExtension.v8cache.get()) {
-                args.add("--v8-cache")
-            }
-            if (project.nodeJsApplicationExtension.target.isPresent) {
-                args.add("--target")
-                args.add(project.nodeJsApplicationExtension.target.get())
-            }
-            if (project.nodeJsApplicationExtension.sourceMap.get()) {
-                args.add("-s")
-            }
-            for (module in project.nodeJsApplicationExtension.externalModules.get()) {
-                args.add("-e")
-                args.add(module)
-            }
+            args.addAll(project.nodeJsApplicationExtension.minify.map {
+                if (it) listOf(
+                    "-m",
+                    "--license",
+                    "LICENSE.txt"
+                ) else emptyList()
+            })
+            args.addAll(project.nodeJsApplicationExtension.target.map {
+                if (it.isNotBlank()) listOf(
+                    "--target",
+                    it
+                ) else emptyList()
+            })
+            args.addAll(project.nodeJsApplicationExtension.sourceMap.map { if (it) listOf("-s") else emptyList() })
+            args.addAll(project.nodeJsApplicationExtension.externalModules.map { modules ->
+                modules.flatMap {
+                    listOf(
+                        "-e",
+                        it
+                    )
+                }
+            })
+            args.addAll(project.nodeJsApplicationExtension.v8cache.map { if (it) listOf("--v8-cache") else emptyList() })
             doLast {
                 if (project.nodeJsApplicationExtension.v8cache.get()) {
                     for (file in project.fileTree(distDir)) {
