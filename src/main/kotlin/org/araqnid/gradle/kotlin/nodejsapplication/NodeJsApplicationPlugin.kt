@@ -11,6 +11,8 @@ private const val INSTALL_NCC = "installNCC"
 
 private const val PACKAGE_WITH_NCC = "packageNodeJsDistributableWithNCC"
 
+private const val ARCHIVE = "nodejsDistributable"
+
 @Suppress("unused")
 class NodeJsApplicationPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -96,7 +98,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             }
         }
 
-        target.tasks.register<Zip>("nodejsDistributable") {
+        target.tasks.register<Zip>(ARCHIVE) {
             group = "package"
             description = "Produce app distributable archive"
 
@@ -108,7 +110,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
         }
 
         target.tasks.named("assemble").configure {
-            it.dependsOn("nodejsDistributable")
+            it.dependsOn(ARCHIVE)
         }
     }
 }
