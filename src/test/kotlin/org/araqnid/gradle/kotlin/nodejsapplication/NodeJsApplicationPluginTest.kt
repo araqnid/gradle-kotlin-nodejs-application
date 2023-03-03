@@ -1,35 +1,22 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
-import kotlinx.coroutines.*
-import kotlinx.coroutines.future.await
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.Rule
 import java.nio.file.Files
-import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class NodeJsApplicationPluginTest {
-    private lateinit var testProjectDir: Path
-
-    @BeforeTest
-    fun setup() {
-        testProjectDir = Files.createTempDirectory("testProjectDir")
-    }
-
-    @AfterTest
-    fun cleanup() {
-        Files.walk(testProjectDir).use { pathStream ->
-            for (path in pathStream.toList().asReversed()) {
-                Files.delete(path)
-            }
-        }
-    }
+    @get:Rule
+    val testProjectDir = TestProjectDirectory()
 
     @Test
     fun `produces runnable NCC bundle`() {
-        testProjectDir.resolve("build.gradle.kts").writeText(
+        testProjectDir.path.resolve("build.gradle.kts").writeText(
             """
                 plugins {
                   kotlin("js") version "1.8.10"
@@ -57,7 +44,7 @@ class NodeJsApplicationPluginTest {
             """.trimIndent()
         )
 
-        testProjectDir.resolve("src/main/kotlin/Example.kt")
+        testProjectDir.path.resolve("src/main/kotlin/Example.kt")
             .apply {
                 parent.createDirectories()
             }
@@ -70,7 +57,7 @@ class NodeJsApplicationPluginTest {
             )
 
         val result = GradleRunner.create()
-            .withProjectDir(testProjectDir.toFile())
+            .withProjectDir(testProjectDir.path.toFile())
             .withArguments("assemble")
             .withPluginClasspath()
             .build()
@@ -83,50 +70,14 @@ class NodeJsApplicationPluginTest {
             """.trimMargin()
         )
 
-        assertTrue { Files.exists(testProjectDir.resolve("build").resolve("packageNodeJsDistributableWithNCC")) }
+        assertTrue { Files.exists(testProjectDir.path.resolve("build").resolve("packageNodeJsDistributableWithNCC")) }
 
         assertEquals(
             runCommand(
                 "node",
-                testProjectDir.resolve("build").resolve("packageNodeJsDistributableWithNCC").toString()
+                testProjectDir.path.resolve("build").resolve("packageNodeJsDistributableWithNCC").toString()
             ), "hello world\n"
         )
     }
 
-    private fun runCommand(vararg args: String): String {
-        return runBlocking {
-            @Suppress("BlockingMethodInNonBlockingContext")
-            val process = Runtime.getRuntime().exec(args)
-
-            val stdin = launch(Dispatchers.IO) {
-                process.outputStream.close()
-            }
-
-            val stdout = async(Dispatchers.IO) {
-                try {
-                    process.inputStream.readAllBytes().toString(Charsets.UTF_8)
-                } finally {
-                    process.inputStream.close()
-                }
-            }
-
-            val stderr = launch(Dispatchers.IO) {
-                process.errorStream.bufferedReader().useLines { lines ->
-                    for (line in lines) {
-                        println("node: stderr: $line")
-                    }
-                }
-            }
-
-            stdin.join()
-            stdout.join()
-            stderr.join()
-
-            val exitCode = process.onExit().await()
-            if (exitCode.exitValue() != 0)
-                error("node process exited with $exitCode")
-
-            stdout.await()
-        }
-    }
 }
