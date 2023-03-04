@@ -17,6 +17,8 @@ The bundling will be added as a dependency of the `assemble` task.
 
 ## Example usage
 
+### NodeJS application in ZIP file
+
 In `build.gradle.kts`:
 
 ```kotlin
@@ -39,13 +41,49 @@ dependencies {
 
 nodeJsApplication {
   // defaults
+  nccVersion.set("latest")
   minify.set(true)
   v8cache.set(false)
-  sourceMap.set(false)
-  nccVersion.set("latest")
   target.set("")
+  sourceMap.set(false)
+  // moduleName.set("project-name") // shouldn't be necessary
+  // externalModules.add("aws-sdk") // would expect aws-sdk to be installed globally when executed
 }
 ```
+
+### GitHub action in `dist`
+
+In `build.gradle.kts`:
+
+```kotlin
+plugins {
+  kotlin("js")
+  id("org.araqnid.kotlin-github-action") version "0.0.2"
+}
+
+kotlin {
+  js(IR) {
+    nodejs {}
+    binaries.executable()
+    useCommonJs()
+  }
+}
+
+dependencies {
+
+}
+
+actionPackaging {
+  // defaults
+  nccVersion.set("latest")
+  minify.set(true)
+  target.set("")
+  sourceMap.set(false)
+  // moduleName.set("action-name") // shouldn't be necessary
+  // externalModules.add("@actions/core") // would expect to use @actions/core installed on the runner
+}
+```
+
 
 ## Configuration
 
