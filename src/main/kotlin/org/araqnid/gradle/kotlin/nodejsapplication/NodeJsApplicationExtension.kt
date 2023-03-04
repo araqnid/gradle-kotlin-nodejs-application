@@ -17,7 +17,7 @@ abstract class NodeJsApplicationExtension {
         nccVersion.convention("latest")
         minify.convention(true)
         v8cache.convention(false)
-        sourceMap.convention(false)
+        sourceMap.convention(true)
         target.convention("")
     }
 }

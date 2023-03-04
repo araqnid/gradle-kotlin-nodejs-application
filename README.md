@@ -45,7 +45,7 @@ nodeJsApplication {
   minify.set(true)
   v8cache.set(false)
   target.set("")
-  sourceMap.set(false)
+  sourceMap.set(true)
   // moduleName.set("project-name") // shouldn't be necessary
   // externalModules.add("aws-sdk") // would expect aws-sdk to be installed globally when executed
 }
