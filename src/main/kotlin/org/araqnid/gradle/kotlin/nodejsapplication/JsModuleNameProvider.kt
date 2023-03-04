@@ -12,6 +12,6 @@ private val Task.moduleName: Provider<String> /* should be a KotlinCompile2JsTas
 private val Project.moduleNameProvider: Provider<String>
     get() = tasks.named("compileProductionExecutableKotlinJs").flatMap { it.moduleName }
 
-fun Provider<String>.usingDefaultFrom(project: Project): Provider<String> {
+internal fun Provider<String>.usingDefaultFrom(project: Project): Provider<String> {
     return orElse(project.moduleNameProvider)
 }

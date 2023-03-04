@@ -4,7 +4,7 @@ import com.github.gradle.node.npm.task.NpmTask
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 
-fun Project.registerInstallNCCTask(name: String, accessNccVersion: Project.() -> Provider<String>) {
+internal fun Project.registerInstallNCCTask(name: String, accessNccVersion: Project.() -> Provider<String>) {
     tasks.register<NpmTask>(name) {
         val toolDir = project.layout.buildDirectory.dir(name)
         val nccScript = toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") }
