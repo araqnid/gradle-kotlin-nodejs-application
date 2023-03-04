@@ -1,9 +1,9 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
-import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.HasMultipleValues
 import org.gradle.api.provider.Provider
 
-internal fun <E, P> ListProperty<in E>.addFrom(
+internal fun <E, P> HasMultipleValues<in E>.addFrom(
     provider: Provider<out P>,
     convert: suspend SequenceScope<E>.(P) -> Unit
 ) {
@@ -15,7 +15,7 @@ internal fun <E, P> ListProperty<in E>.addFrom(
     })
 }
 
-internal fun <E, P1, P2> ListProperty<in E>.addFrom(
+internal fun <E, P1, P2> HasMultipleValues<in E>.addFrom(
     provider1: Provider<out P1>,
     provider2: Provider<out P2>,
     convert: suspend SequenceScope<E>.(P1, P2) -> Unit
