@@ -77,5 +77,5 @@ class PackageGithubActionPlugin : Plugin<Project> {
     }
 }
 
-private val Project.actionPackagingExtension
+private val Project.actionPackagingExtension: PackageGithubActionExtension
     get() = extensions.getByType(PackageGithubActionExtension::class.java)

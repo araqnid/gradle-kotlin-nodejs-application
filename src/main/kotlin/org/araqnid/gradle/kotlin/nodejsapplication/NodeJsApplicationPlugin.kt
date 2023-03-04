@@ -1,6 +1,5 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
-import com.github.gradle.node.NodeExtension
 import com.github.gradle.node.task.NodeTask
 import org.gradle.api.*
 import org.gradle.api.tasks.bundling.Zip
@@ -29,7 +28,6 @@ class NodeJsApplicationPlugin : Plugin<Project> {
 
             dependsOn(INSTALL_NCC, "productionExecutableCompileSync")
 
-            val nodeExtension = project.extensions.getByType(NodeExtension::class.java)
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.buildDirectory.dir(name)
             val moduleNameProvider = project.nodeJsApplicationExtension.moduleName.usingDefaultFrom(project)
@@ -90,7 +88,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
                         )
                     }
                 }
-                val nodeVersion = nodeExtension.version.orNull
+                val nodeVersion = project.nodeExtension.version.orNull
                 if (nodeVersion != null) {
                     logger.info("Used Node version $nodeVersion to run NCC")
                     distDir.get().file(".nvmrc").asFile.writeText(nodeVersion)
@@ -115,5 +113,5 @@ class NodeJsApplicationPlugin : Plugin<Project> {
     }
 }
 
-private val Project.nodeJsApplicationExtension
-    get() = project.extensions.getByType(NodeJsApplicationExtension::class.java)
+private val Project.nodeJsApplicationExtension: NodeJsApplicationExtension
+    get() = extensions.getByType(NodeJsApplicationExtension::class.java)
