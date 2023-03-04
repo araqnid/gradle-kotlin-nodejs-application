@@ -27,7 +27,6 @@ class PackageGithubActionPlugin : Plugin<Project> {
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.projectDirectory.dir("dist")
             val moduleNameProvider = project.actionPackagingExtension.moduleName.usingDefaultFrom(project)
-            val operations = project.injected<InjectedOperations>()
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
             inputs.property("nodeVersion", project.nodeExtension.versionIfDownloaded)
