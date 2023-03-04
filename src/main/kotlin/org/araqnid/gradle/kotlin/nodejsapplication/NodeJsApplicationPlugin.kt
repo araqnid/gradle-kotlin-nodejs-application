@@ -48,9 +48,9 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             }
             script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
             args.add("build")
-            args.add(moduleNameProvider.zip(project.jsBuildOutput) { moduleName, jsBuildOutput ->
-                jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString()
-            })
+            args.addFrom(moduleNameProvider, project.jsBuildOutput) { moduleName, jsBuildOutput ->
+                yield(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString())
+            }
             args.add("-o")
             args.add(distDir.map { it.asFile.toString() })
             args.addFrom(project.nodeJsApplicationExtension.minify) {
