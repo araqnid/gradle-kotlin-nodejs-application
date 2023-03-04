@@ -30,7 +30,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
             val operations = project.injected<InjectedOperations>()
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
-            inputs.files(project.tasks.named("nodeSetup"))
+            inputs.property("nodeVersion", project.nodeExtension.versionIfDownloaded)
             inputs.property("moduleName", moduleNameProvider)
             inputs.property("minify", project.actionPackagingExtension.minify)
             inputs.property("target", project.actionPackagingExtension.target)
@@ -38,9 +38,6 @@ class PackageGithubActionPlugin : Plugin<Project> {
             inputs.property("externalModules", project.actionPackagingExtension.externalModules)
             outputs.dir(distDir)
 
-            doFirst {
-                operations.delete(distDir)
-            }
             script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
             args.add("build")
             args.add(moduleNameProvider.zip(project.jsBuildOutput) { moduleName, jsBuildOutput ->

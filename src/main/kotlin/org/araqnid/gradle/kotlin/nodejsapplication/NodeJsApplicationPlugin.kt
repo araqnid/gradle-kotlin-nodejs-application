@@ -34,7 +34,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             val operations = project.injected<InjectedOperations>()
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
-            inputs.files(project.tasks.named("nodeSetup"))
+            inputs.property("nodeVersion", project.nodeExtension.versionIfDownloaded)
             inputs.property("moduleName", moduleNameProvider)
             inputs.property("minify", project.nodeJsApplicationExtension.minify)
             inputs.property("v8cache", project.nodeJsApplicationExtension.v8cache)
