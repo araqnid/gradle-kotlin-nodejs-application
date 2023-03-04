@@ -27,6 +27,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.projectDirectory.dir("dist")
             val moduleNameProvider = project.actionPackagingExtension.moduleName.usingDefaultFrom(project)
+            val operations = project.injected<InjectedOperations>()
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
             inputs.files(project.tasks.named("nodeSetup"))
@@ -38,7 +39,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
             outputs.dir(distDir)
 
             doFirst {
-                project.delete(distDir)
+                operations.delete(distDir)
             }
             script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
             args.add("build")

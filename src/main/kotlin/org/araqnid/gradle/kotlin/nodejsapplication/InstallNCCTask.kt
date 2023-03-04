@@ -15,9 +15,10 @@ fun Project.registerInstallNCCTask(name: String, accessNccVersion: Project.() ->
         workingDir.fileProvider(toolDir.map { it.asFile })
         npmCommand.set(listOf("install"))
         args.add(project.accessNccVersion().map { "@vercel/ncc@$it" })
+        val operations = project.injected<InjectedOperations>()
 
         doFirst {
-            project.delete(toolDir)
+            operations.delete(toolDir)
             toolDir.get().asFile.mkdirs()
         }
 
