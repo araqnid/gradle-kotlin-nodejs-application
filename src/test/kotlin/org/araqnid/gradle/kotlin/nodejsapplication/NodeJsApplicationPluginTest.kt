@@ -14,8 +14,7 @@ class NodeJsApplicationPluginTest {
     @get:Rule
     val testProjectDir = TestProjectDirectory()
 
-    @Test
-    fun `produces runnable NCC bundle`() {
+    private fun setupTrivialProject() {
         testProjectDir.path.resolve("build.gradle.kts").writeText(
             """
                 plugins {
@@ -55,6 +54,11 @@ class NodeJsApplicationPluginTest {
             }
         """.trimIndent()
             )
+    }
+
+    @Test
+    fun `produces runnable NCC bundle`() {
+        setupTrivialProject()
 
         val result = GradleRunner.create()
             .withProjectDir(testProjectDir.path.toFile())
@@ -78,6 +82,17 @@ class NodeJsApplicationPluginTest {
                 testProjectDir.path.resolve("build").resolve("packageNodeJsDistributableWithNCC").toString()
             ), "hello world\n"
         )
+    }
+
+    @Test
+    fun `trivial project can be built with configuration cache`() {
+        setupTrivialProject()
+
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.path.toFile())
+            .withArguments("--configuration-cache", "assemble")
+            .withPluginClasspath()
+            .build()
     }
 
 }

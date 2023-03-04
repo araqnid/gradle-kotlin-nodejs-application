@@ -14,8 +14,7 @@ class PackageGithubActionTest {
     @get:Rule
     val testProjectDir = TestProjectDirectory()
 
-    @Test
-    fun `produces runnable NCC bundle`() {
+    private fun setupTrivialProject() {
         testProjectDir.path.resolve("build.gradle.kts").writeText(
             """
                 plugins {
@@ -55,6 +54,11 @@ class PackageGithubActionTest {
             }
         """.trimIndent()
             )
+    }
+
+    @Test
+    fun `produces runnable NCC bundle`() {
+        setupTrivialProject()
 
         val result = GradleRunner.create()
             .withProjectDir(testProjectDir.path.toFile())
@@ -78,5 +82,16 @@ class PackageGithubActionTest {
                 testProjectDir.path.resolve("dist").toString()
             ), "hello world\n"
         )
+    }
+
+    @Test
+    fun `trivial project can be built with configuration cache`() {
+        setupTrivialProject()
+
+        GradleRunner.create()
+            .withProjectDir(testProjectDir.path.toFile())
+            .withArguments("--configuration-cache", "assemble")
+            .withPluginClasspath()
+            .build()
     }
 }

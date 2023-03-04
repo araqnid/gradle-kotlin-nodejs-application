@@ -76,9 +76,13 @@ class NodeJsApplicationPlugin : Plugin<Project> {
                 }
             })
             args.addAll(project.nodeJsApplicationExtension.v8cache.map { if (it) listOf("--v8-cache") else emptyList() })
+
+            val nodeVersion = project.nodeExtension.versionIfDownloaded
+            val useV8Cache = project.nodeJsApplicationExtension.v8cache
+
             doLast {
-                if (project.nodeJsApplicationExtension.v8cache.get()) {
-                    for (file in project.fileTree(distDir)) {
+                if (useV8Cache.get()) {
+                    for (file in operations.fileTree(distDir)) {
                         logger.info("set permissions of $file")
                         Files.setPosixFilePermissions(
                             file.toPath(), setOf(
@@ -89,10 +93,9 @@ class NodeJsApplicationPlugin : Plugin<Project> {
                         )
                     }
                 }
-                val nodeVersion = project.nodeExtension.version.orNull
-                if (nodeVersion != null) {
+                if (nodeVersion.get().isNotEmpty()) {
                     logger.info("Used Node version $nodeVersion to run NCC")
-                    distDir.get().file(".nvmrc").asFile.writeText(nodeVersion)
+                    distDir.get().file(".nvmrc").asFile.writeText(nodeVersion.get())
                 }
             }
         }
