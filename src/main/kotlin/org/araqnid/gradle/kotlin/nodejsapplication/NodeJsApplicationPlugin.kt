@@ -53,29 +53,31 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             })
             args.add("-o")
             args.add(distDir.map { it.asFile.toString() })
-            args.addAll(project.nodeJsApplicationExtension.minify.map {
-                if (it) listOf(
-                    "-m",
-                    "--license",
-                    "LICENSE.txt"
-                ) else emptyList()
-            })
-            args.addAll(project.nodeJsApplicationExtension.target.map {
-                if (it.isNotBlank()) listOf(
-                    "--target",
-                    it
-                ) else emptyList()
-            })
-            args.addAll(project.nodeJsApplicationExtension.sourceMap.map { if (it) listOf("-s") else emptyList() })
-            args.addAll(project.nodeJsApplicationExtension.externalModules.map { modules ->
-                modules.flatMap {
-                    listOf(
-                        "-e",
-                        it
-                    )
+            args.addFrom(project.nodeJsApplicationExtension.minify) {
+                if (it) {
+                    yield("-m")
+                    yield("--license")
+                    yield("LICENSE.txt")
                 }
-            })
-            args.addAll(project.nodeJsApplicationExtension.v8cache.map { if (it) listOf("--v8-cache") else emptyList() })
+            }
+            args.addFrom(project.nodeJsApplicationExtension.target) {
+                if (it.isNotBlank()) {
+                    yield("--target")
+                    yield(it)
+                }
+            }
+            args.addFrom(project.nodeJsApplicationExtension.sourceMap) {
+                if (it) yield("-s")
+            }
+            args.addFrom(project.nodeJsApplicationExtension.externalModules) { modules ->
+                for (module in modules) {
+                    yield("-e")
+                    yield(module)
+                }
+            }
+            args.addFrom(project.nodeJsApplicationExtension.v8cache) {
+                if (it) yield("--v8-cache")
+            }
 
             val nodeVersion = project.nodeExtension.versionIfDownloaded
             val useV8Cache = project.nodeJsApplicationExtension.v8cache
