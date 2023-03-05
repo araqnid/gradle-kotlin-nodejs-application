@@ -46,24 +46,24 @@ class PackageGithubActionPlugin : Plugin<Project> {
             args.add(distDir.toString())
             args.addFrom(project.actionPackagingExtension.minify) {
                 if (it) {
-                    yield("-m")
-                    yield("--license")
-                    yield("LICENSE.txt")
+                    add("-m")
+                    add("--license")
+                    add("LICENSE.txt")
                 }
             }
             args.addFrom(project.actionPackagingExtension.target) {
                 if (it.isNotBlank()) {
-                    yield("--target")
-                    yield(it)
+                    add("--target")
+                    add(it)
                 }
             }
             args.addFrom(project.actionPackagingExtension.sourceMap) {
-                if (it) yield("-s")
+                if (it) add("-s")
             }
             args.addFrom(project.actionPackagingExtension.externalModules) { modules ->
                 for (module in modules) {
-                    yield("-e")
-                    yield(module)
+                    add("-e")
+                    add(module)
                 }
             }
         }

@@ -49,34 +49,34 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
             args.add("build")
             args.addFrom(moduleNameProvider, project.jsBuildOutput) { moduleName, jsBuildOutput ->
-                yield(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString())
+                add(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString())
             }
             args.add("-o")
             args.add(distDir.map { it.asFile.toString() })
             args.addFrom(project.nodeJsApplicationExtension.minify) {
                 if (it) {
-                    yield("-m")
-                    yield("--license")
-                    yield("LICENSE.txt")
+                    add("-m")
+                    add("--license")
+                    add("LICENSE.txt")
                 }
             }
             args.addFrom(project.nodeJsApplicationExtension.target) {
                 if (it.isNotBlank()) {
-                    yield("--target")
-                    yield(it)
+                    add("--target")
+                    add(it)
                 }
             }
             args.addFrom(project.nodeJsApplicationExtension.sourceMap) {
-                if (it) yield("-s")
+                if (it) add("-s")
             }
             args.addFrom(project.nodeJsApplicationExtension.externalModules) { modules ->
                 for (module in modules) {
-                    yield("-e")
-                    yield(module)
+                    add("-e")
+                    add(module)
                 }
             }
             args.addFrom(project.nodeJsApplicationExtension.v8cache) {
-                if (it) yield("--v8-cache")
+                if (it) add("--v8-cache")
             }
 
             val nodeVersion = project.nodeExtension.versionIfDownloaded
