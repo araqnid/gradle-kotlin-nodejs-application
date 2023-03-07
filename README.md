@@ -1,6 +1,8 @@
 # Package a Kotlin/JS-based NodeJS script/GitHub Action
 
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/org.araqnid.kotlin-nodejs-application?logo=gradle)](https://plugins.gradle.org/plugin/org.araqnid.kotlin-nodejs-application)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.8.10-blue.svg)](http://kotlinlang.org)
+[![Gradle Build](https://github.com/araqnid/gradle-kotlin-nodejs-application/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/araqnid/gradle-kotlin-nodejs-application/actions/workflows/gradle-build.yml)
 
 Uses Vercel's [NCC](https://github.com/vercel/ncc) tool to bundle the produced NodeJS
 executable with all its dependencies. There are two plugins provided:
