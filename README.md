@@ -28,7 +28,7 @@ In `build.gradle.kts`:
 ```kotlin
 plugins {
   kotlin("js")
-  id("org.araqnid.kotlin-nodejs-application") version "0.0.3"
+  id("org.araqnid.kotlin-nodejs-application") version "0.0.4"
 }
 
 kotlin {
@@ -62,7 +62,7 @@ In `build.gradle.kts`:
 ```kotlin
 plugins {
   kotlin("js")
-  id("org.araqnid.kotlin-github-action") version "0.0.3"
+  id("org.araqnid.kotlin-github-action") version "0.0.4"
 }
 
 kotlin {
