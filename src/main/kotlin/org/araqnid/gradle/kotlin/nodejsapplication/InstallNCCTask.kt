@@ -14,6 +14,8 @@ internal fun Project.registerInstallNCCTask(name: String, accessNccVersion: Proj
 
         workingDir.fileProvider(toolDir.map { it.asFile })
         npmCommand.set(listOf("install"))
+        args.add("--prefix")
+        args.add(toolDir.map { it.asFile.toString() })
         args.add(project.accessNccVersion().map { "@vercel/ncc@$it" })
         val operations = project.injected<InjectedOperations>()
 
