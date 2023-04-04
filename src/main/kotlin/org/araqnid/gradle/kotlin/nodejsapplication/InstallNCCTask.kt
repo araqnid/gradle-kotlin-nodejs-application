@@ -2,12 +2,13 @@ package org.araqnid.gradle.kotlin.nodejsapplication
 
 import com.github.gradle.node.npm.task.NpmTask
 import org.gradle.api.Project
-import org.gradle.api.provider.Provider
 
-internal fun Project.registerInstallNCCTask(name: String, accessNccVersion: Project.() -> Provider<String>) {
+internal fun Project.registerInstallNCCTask(name: String, extension: NodeJsPackagingExtension) {
     tasks.register<NpmTask>(name) {
         val toolDir = project.layout.buildDirectory.dir(name)
         val nccScript = toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") }
+
+        inputs.property("nccVersion", extension.nccVersion)
 
         // every run of @vercel/ncc touches the v8 cache files, so we can't simply `outputs.dir(toolDir)` here
         outputs.file(nccScript)
@@ -16,7 +17,7 @@ internal fun Project.registerInstallNCCTask(name: String, accessNccVersion: Proj
         npmCommand.set(listOf("install"))
         args.add("--prefix")
         args.add(toolDir.map { it.asFile.toString() })
-        args.add(project.accessNccVersion().map { "@vercel/ncc@$it" })
+        args.add(extension.nccVersion.map { "@vercel/ncc@$it" })
         val operations = project.injected<InjectedOperations>()
 
         doFirst {

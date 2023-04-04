@@ -20,7 +20,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
 
         target.extensions.create("nodeJsApplication", NodeJsApplicationExtension::class.java)
 
-        target.registerInstallNCCTask(INSTALL_NCC) { project.nodeJsApplicationExtension.nccVersion }
+        target.registerInstallNCCTask(INSTALL_NCC, target.nodeJsApplicationExtension)
 
         target.tasks.register<NodeTask>(PACKAGE_WITH_NCC) {
             group = "package"

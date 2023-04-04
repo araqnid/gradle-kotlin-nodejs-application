@@ -16,7 +16,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
 
         target.extensions.create("actionPackaging", PackageGithubActionExtension::class.java)
 
-        target.registerInstallNCCTask(INSTALL_NCC) { actionPackagingExtension.nccVersion }
+        target.registerInstallNCCTask(INSTALL_NCC, target.actionPackagingExtension)
 
         target.tasks.register<NodeTask>(PACKAGE_WITH_NCC) {
             group = "package"
