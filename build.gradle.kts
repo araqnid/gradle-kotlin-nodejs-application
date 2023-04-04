@@ -12,7 +12,9 @@ repositories {
 }
 
 dependencies {
+    @Suppress("VulnerableLibrariesLocal")
     implementation("com.github.node-gradle:gradle-node-plugin:3.5.1")
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.4"))
 
     testImplementation(kotlin("test-junit"))
     testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.6.4"))
