@@ -17,7 +17,7 @@ dependencies {
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.4"))
 
     testImplementation(kotlin("test-junit"))
-    testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.6.4"))
+    testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.0"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
 }
