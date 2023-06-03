@@ -16,10 +16,8 @@ fun runCommand(vararg args: String): String {
         }
 
         val stdout = async(Dispatchers.IO) {
-            try {
-                process.inputStream.readAllBytes().toString(Charsets.UTF_8)
-            } finally {
-                process.inputStream.close()
+            process.inputStream.reader(Charsets.UTF_8).use { r ->
+                r.readText()
             }
         }
 
