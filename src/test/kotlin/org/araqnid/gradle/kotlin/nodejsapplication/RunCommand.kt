@@ -1,7 +1,10 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 fun runCommand(vararg args: String): String = runBlocking {
     @Suppress("BlockingMethodInNonBlockingContext")
@@ -17,11 +20,9 @@ fun runCommand(vararg args: String): String = runBlocking {
         }
     }
 
-    withContext(Dispatchers.IO) {
-        process.errorStream.bufferedReader().useLines { lines ->
-            for (line in lines) {
-                println("node: stderr: $line")
-            }
+    process.errorStream.bufferedReader().useLines { lines ->
+        for (line in lines) {
+            println("node: stderr: $line")
         }
     }
 
