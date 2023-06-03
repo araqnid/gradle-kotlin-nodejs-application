@@ -15,9 +15,8 @@ dependencies {
     implementation("com.github.node-gradle:gradle-node-plugin:5.0.0")
 
     testImplementation(kotlin("test-junit"))
-    testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.6.4"))
+    testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.1"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
 }
 
 gradlePlugin {
