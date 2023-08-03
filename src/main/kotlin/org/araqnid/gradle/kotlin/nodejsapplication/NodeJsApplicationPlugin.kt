@@ -1,7 +1,8 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
 import com.github.gradle.node.task.NodeTask
-import org.gradle.api.*
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Zip
 import java.nio.file.Files
 import java.nio.file.attribute.PosixFilePermission
@@ -26,7 +27,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             group = "package"
             description = "Package app as a single file using NCC"
 
-            dependsOn(INSTALL_NCC, "productionExecutableCompileSync")
+            dependsOn(INSTALL_NCC, "productionExecutableCompileSync", "kotlinNpmInstall")
 
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.buildDirectory.dir(name)

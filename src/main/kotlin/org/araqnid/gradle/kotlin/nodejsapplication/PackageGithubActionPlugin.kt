@@ -22,7 +22,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
             group = "package"
             description = "Package app as a single file using NCC"
 
-            dependsOn(INSTALL_NCC, "productionExecutableCompileSync")
+            dependsOn(INSTALL_NCC, "productionExecutableCompileSync", "kotlinNpmInstall")
 
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.projectDirectory.dir("dist")
