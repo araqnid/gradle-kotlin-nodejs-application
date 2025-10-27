@@ -16,7 +16,8 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
 
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
