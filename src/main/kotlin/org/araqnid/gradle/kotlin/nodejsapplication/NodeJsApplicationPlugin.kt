@@ -33,6 +33,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             val distDir = project.layout.buildDirectory.dir(name)
             val moduleNameProvider = project.nodeJsApplicationExtension.moduleName.usingDefaultFrom(project)
             val operations = project.injected<InjectedOperations>()
+            val nccScript = toolDir.map { it.file(NCC_SCRIPT_PATH_FROM_TOOL_DIR) }
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
             inputs.property("nodeVersion", project.nodeExtension.versionIfDownloaded)
@@ -42,12 +43,13 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             inputs.property("target", project.nodeJsApplicationExtension.target)
             inputs.property("sourceMap", project.nodeJsApplicationExtension.sourceMap)
             inputs.property("externalModules", project.nodeJsApplicationExtension.externalModules)
+            inputs.file(nccScript)
             outputs.dir(distDir)
 
             doFirst {
                 operations.delete(distDir)
             }
-            script.set(toolDir.map { it.file("node_modules/.bin/ncc") })
+            script.set(nccScript)
             args.add("build")
             args.addFrom(moduleNameProvider, project.jsBuildOutput) { moduleName, jsBuildOutput ->
                 add(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString())

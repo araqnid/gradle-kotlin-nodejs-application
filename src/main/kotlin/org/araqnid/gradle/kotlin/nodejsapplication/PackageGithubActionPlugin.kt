@@ -27,6 +27,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.projectDirectory.dir("dist")
             val moduleNameProvider = project.actionPackagingExtension.moduleName.usingDefaultFrom(project)
+            val nccScript = toolDir.map { it.file(NCC_SCRIPT_PATH_FROM_TOOL_DIR) }
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })
             inputs.property("nodeVersion", project.nodeExtension.versionIfDownloaded)
@@ -35,9 +36,10 @@ class PackageGithubActionPlugin : Plugin<Project> {
             inputs.property("target", project.actionPackagingExtension.target)
             inputs.property("sourceMap", project.actionPackagingExtension.sourceMap)
             inputs.property("externalModules", project.actionPackagingExtension.externalModules)
+            inputs.file(nccScript)
             outputs.dir(distDir)
 
-            script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
+            script.set(nccScript)
             args.add("build")
             args.add(moduleNameProvider.zip(project.jsBuildOutput) { moduleName, jsBuildOutput ->
                 jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString()
