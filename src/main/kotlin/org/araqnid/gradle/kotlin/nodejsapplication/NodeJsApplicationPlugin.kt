@@ -27,7 +27,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             group = "package"
             description = "Package app as a single file using NCC"
 
-            dependsOn(INSTALL_NCC, "productionExecutableCompileSync", "kotlinNpmInstall")
+            dependsOn(INSTALL_NCC, "jsProductionExecutableCompileSync", ":kotlinNpmInstall")
 
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.buildDirectory.dir(name)
@@ -47,7 +47,7 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             doFirst {
                 operations.delete(distDir)
             }
-            script.set(toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") })
+            script.set(toolDir.map { it.file("node_modules/.bin/ncc") })
             args.add("build")
             args.addFrom(moduleNameProvider, project.jsBuildOutput) { moduleName, jsBuildOutput ->
                 add(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString())
