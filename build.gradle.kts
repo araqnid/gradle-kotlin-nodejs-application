@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "org.araqnid.kotlin-nodejs-application"
-version = "0.0.4"
+version = "0.1.0"
 
 repositories {
     mavenCentral()
