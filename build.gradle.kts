@@ -20,8 +20,8 @@ dependencies {
 }
 
 gradlePlugin {
-    vcsUrl.set("https://github.com/araqnid/gradle-kotlin-nodejs-application")
-    website.set("https://github.com/araqnid/gradle-kotlin-nodejs-application")
+    vcsUrl = "https://github.com/araqnid/gradle-kotlin-nodejs-application"
+    website = "https://github.com/araqnid/gradle-kotlin-nodejs-application"
 
     plugins {
         create("nodejsApplicationPlugin") {
