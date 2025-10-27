@@ -1,7 +1,7 @@
 # Package a Kotlin/JS-based NodeJS script/GitHub Action
 
 [![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/org.araqnid.kotlin-nodejs-application?logo=gradle)](https://plugins.gradle.org/plugin/org.araqnid.kotlin-nodejs-application)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.8.10-blue.svg)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.2.21-blue.svg)](http://kotlinlang.org)
 [![Gradle Build](https://github.com/araqnid/gradle-kotlin-nodejs-application/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/araqnid/gradle-kotlin-nodejs-application/actions/workflows/gradle-build.yml)
 
 Uses Vercel's [NCC](https://github.com/vercel/ncc) tool to bundle the produced NodeJS
@@ -27,12 +27,12 @@ In `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  kotlin("js")
+    kotlin("multiplatform")
   id("org.araqnid.kotlin-nodejs-application") version "0.0.4"
 }
 
 kotlin {
-  js(IR) {
+    js {
     nodejs {}
     binaries.executable()
     useCommonJs()
@@ -45,12 +45,12 @@ dependencies {
 
 nodeJsApplication {
   // defaults
-  nccVersion.set("latest")
-  minify.set(true)
-  v8cache.set(false)
-  target.set("")
-  sourceMap.set(true)
-  // moduleName.set("project-name") // shouldn't be necessary
+    nccVersion = "latest"
+    minify = true
+    v8cache = false
+    target = ""
+    sourceMap = true
+    // moduleName = "project-name" // shouldn't be necessary
   // externalModules.add("aws-sdk") // would expect aws-sdk to be installed globally when executed
 }
 ```
@@ -61,12 +61,12 @@ In `build.gradle.kts`:
 
 ```kotlin
 plugins {
-  kotlin("js")
+    kotlin("multiplatform")
   id("org.araqnid.kotlin-github-action") version "0.0.4"
 }
 
 kotlin {
-  js(IR) {
+    js {
     nodejs {}
     binaries.executable()
     useCommonJs()
@@ -79,11 +79,11 @@ dependencies {
 
 actionPackaging {
   // defaults
-  nccVersion.set("latest")
-  minify.set(true)
-  target.set("")
-  sourceMap.set(false)
-  // moduleName.set("action-name") // shouldn't be necessary
+    nccVersion = "latest"
+    minify = true
+    target = ""
+    sourceMap = false
+    // moduleName = "project-name" // shouldn't be necessary
   // externalModules.add("@actions/core") // would expect to use @actions/core installed on the runner
 }
 ```
