@@ -3,7 +3,7 @@ package org.araqnid.gradle.kotlin.nodejsapplication
 import org.gradle.api.provider.HasMultipleValues
 import org.gradle.api.provider.Provider
 
-internal inline fun <E : Any, P> HasMultipleValues<in E>.addFrom(
+internal inline fun <E : Any, P : Any> HasMultipleValues<in E>.addFrom(
     provider: Provider<out P>,
     crossinline convert: MutableList<E>.(P) -> Unit
 ) {
@@ -12,7 +12,7 @@ internal inline fun <E : Any, P> HasMultipleValues<in E>.addFrom(
     })
 }
 
-internal inline fun <E : Any, P1, P2> HasMultipleValues<in E>.addFrom(
+internal inline fun <E : Any, P1 : Any, P2 : Any> HasMultipleValues<in E>.addFrom(
     provider1: Provider<out P1>,
     provider2: Provider<out P2>,
     crossinline convert: MutableList<E>.(P1, P2) -> Unit
