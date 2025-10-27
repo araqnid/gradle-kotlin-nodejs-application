@@ -57,7 +57,14 @@ nodeJsApplication {
     // moduleName = "project-name" // shouldn't be necessary
     // externalModules.add("aws-sdk") // would expect aws-sdk to be installed globally when executed
 }
+```
 
+In `src/jsMain/Example.kt`:
+
+```kotlin
+fun main() {
+    println("hello world")
+}
 ```
 
 ### GitHub action in `dist`
