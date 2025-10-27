@@ -3,10 +3,12 @@ package org.araqnid.gradle.kotlin.nodejsapplication
 import com.github.gradle.node.npm.task.NpmTask
 import org.gradle.api.Project
 
+internal const val NCC_SCRIPT_PATH_FROM_TOOL_DIR = "node_modules/.bin/ncc"
+
 internal fun Project.registerInstallNCCTask(name: String, extension: NodeJsPackagingExtension) {
     tasks.register<NpmTask>(name) {
         val toolDir = project.layout.buildDirectory.dir(name)
-        val nccScript = toolDir.map { it.file("node_modules/@vercel/ncc/dist/ncc/cli.js") }
+        val nccScript = toolDir.map { it.file(NCC_SCRIPT_PATH_FROM_TOOL_DIR) }
 
         inputs.property("nccVersion", extension.nccVersion)
 
@@ -27,6 +29,7 @@ internal fun Project.registerInstallNCCTask(name: String, extension: NodeJsPacka
 
         doLast {
             check(nccScript.get().asFile.exists()) { "npm install did not produce a @vercel/ncc executable" }
+            logger.info("Installed NCC at ${nccScript.get()}")
         }
     }
 }

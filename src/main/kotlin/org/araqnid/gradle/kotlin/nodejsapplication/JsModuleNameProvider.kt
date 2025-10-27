@@ -1,17 +1,17 @@
 package org.araqnid.gradle.kotlin.nodejsapplication
 
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.provider.Provider
 
 // hax to avoid depending on Kotlin plugin directly
 @Suppress("UNCHECKED_CAST")
-private val Task.moduleName: Provider<String> /* should be a KotlinCompile2JsTask */
-    get() = javaClass.getMethod("getModuleName").invoke(this)!! as Provider<String>
-
 private val Project.moduleNameProvider: Provider<String>
-    get() = tasks.named("compileProductionExecutableKotlinJs").flatMap { it.moduleName }
+    get() {
+        val kotlinMultiplatformExtension = extensions.getByName("kotlin")
+        val jsMethod = kotlinMultiplatformExtension.javaClass.getMethod("js")
+        val jsDSL = jsMethod.invoke(kotlinMultiplatformExtension)
+        val outputModuleNameGetter = jsDSL.javaClass.getMethod("getOutputModuleName")
+        return outputModuleNameGetter.invoke(jsDSL) as org.gradle.api.provider.Property<String>
+    }
 
-internal fun Provider<String>.usingDefaultFrom(project: Project): Provider<String> {
-    return orElse(project.moduleNameProvider)
-}
+internal fun Provider<String>.usingDefaultFrom(project: Project) = orElse(project.moduleNameProvider)

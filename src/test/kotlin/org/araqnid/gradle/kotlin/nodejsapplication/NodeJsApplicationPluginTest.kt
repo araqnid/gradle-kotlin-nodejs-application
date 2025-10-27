@@ -18,12 +18,12 @@ class NodeJsApplicationPluginTest {
         testProjectDir.path.resolve("build.gradle.kts").writeText(
             """
                 plugins {
-                  kotlin("js") version "1.8.10"
+                  kotlin("multiplatform") version "2.2.21"
                   id("org.araqnid.kotlin-nodejs-application")
                 }
                 
                 kotlin {
-                  js(IR) {
+                  js {
                     nodejs()
                     useCommonJs()
                     binaries.executable()
@@ -35,7 +35,7 @@ class NodeJsApplicationPluginTest {
                 }
                 
                 dependencies {
-                  implementation(kotlin("stdlib-js"))
+                  "jsMainImplementation"(kotlin("stdlib-js"))
                 }
                 
                 nodeJsApplication {
@@ -43,7 +43,7 @@ class NodeJsApplicationPluginTest {
             """.trimIndent()
         )
 
-        testProjectDir.path.resolve("src/main/kotlin/Example.kt")
+        testProjectDir.path.resolve("src/jsMain/kotlin/Example.kt")
             .apply {
                 parent.createDirectories()
             }

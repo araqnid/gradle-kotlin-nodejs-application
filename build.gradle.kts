@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.10"
+    kotlin("jvm") version "2.2.21"
     id("com.gradle.plugin-publish") version "2.0.0"
 }
 
@@ -12,10 +12,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.node-gradle:gradle-node-plugin:5.0.0")
+    implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
 
     testImplementation(kotlin("test-junit"))
-    testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3"))
+    testImplementation(platform("org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 }
 
