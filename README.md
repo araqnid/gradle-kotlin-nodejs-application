@@ -27,16 +27,20 @@ In `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    kotlin("multiplatform")
-  id("org.araqnid.kotlin-nodejs-application") version "0.1.0"
+    kotlin("multiplatform") version "2.2.21"
+    id("org.araqnid.kotlin-nodejs-application") version "0.1.0"
 }
 
 kotlin {
     js {
-    nodejs {}
-    binaries.executable()
-    useCommonJs()
-  }
+        nodejs {}
+        binaries.executable()
+        useCommonJs()
+    }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -44,15 +48,16 @@ dependencies {
 }
 
 nodeJsApplication {
-  // defaults
+    // defaults
     nccVersion = "latest"
     minify = true
     v8cache = false
     target = ""
     sourceMap = true
     // moduleName = "project-name" // shouldn't be necessary
-  // externalModules.add("aws-sdk") // would expect aws-sdk to be installed globally when executed
+    // externalModules.add("aws-sdk") // would expect aws-sdk to be installed globally when executed
 }
+
 ```
 
 ### GitHub action in `dist`
@@ -61,16 +66,20 @@ In `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    kotlin("multiplatform")
-  id("org.araqnid.kotlin-github-action") version "0.1.0"
+    kotlin("multiplatform") version "2.2.21"
+    id("org.araqnid.kotlin-github-action") version "0.1.0"
 }
 
 kotlin {
     js {
-    nodejs {}
-    binaries.executable()
-    useCommonJs()
-  }
+        nodejs {}
+        binaries.executable()
+        useCommonJs()
+    }
+}
+
+repositories {
+    mavenCentral()
 }
 
 dependencies {
