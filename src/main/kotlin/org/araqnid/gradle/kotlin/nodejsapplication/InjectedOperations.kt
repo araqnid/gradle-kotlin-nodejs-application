@@ -6,7 +6,7 @@ import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 
-internal inline fun <reified T> Project.injected(): T {
+internal inline fun <reified T : Any> Project.injected(): T {
     return objects.newInstance(T::class.java)
 }
 
