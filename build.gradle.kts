@@ -12,6 +12,10 @@ repositories {
     gradlePluginPortal()
 }
 
+kotlin {
+    jvmToolchain(21)
+}
+
 dependencies {
     implementation("com.github.node-gradle:gradle-node-plugin:7.1.0")
 
