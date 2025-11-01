@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.2.21"
     id("com.gradle.plugin-publish") version "2.0.0"
+    id("com.adarshr.test-logger") version "4.0.0"
 }
 
 group = "org.araqnid.kotlin-nodejs-application"
