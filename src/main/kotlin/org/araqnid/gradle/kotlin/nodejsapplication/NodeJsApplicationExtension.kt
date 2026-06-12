@@ -17,6 +17,7 @@ abstract class NodeJsApplicationExtension : NodeJsPackagingExtension {
     abstract override val target: Property<String>
     abstract override val sourceMap: Property<Boolean>
     abstract override val moduleName: Property<String>
+    abstract override val moduleKind: Property<String>
     abstract override val externalModules: SetProperty<String>
 
     init {

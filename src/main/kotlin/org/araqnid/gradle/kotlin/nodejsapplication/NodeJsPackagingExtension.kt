@@ -38,6 +38,15 @@ interface NodeJsPackagingExtension {
     val moduleName: Property<String>
 
     /**
+     * Kotlin module kind.
+     *
+     * Required to get the correct JS file extension: by default, gleaned from the Kotlin plugin configuration.
+     *
+     * If set to "ES_MODULE", looks for a ".mjs" file and generates a relevant `package.json`
+     */
+    val moduleKind: Property<String>
+
+    /**
      * External JS module names to exclude from bundle.
      *
      * Corresponds to `ncc --external`

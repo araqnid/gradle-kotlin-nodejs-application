@@ -26,7 +26,7 @@ class PackageGithubActionPlugin : Plugin<Project> {
 
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.projectDirectory.dir("dist")
-            val moduleNameProvider = project.actionPackagingExtension.moduleName.usingDefaultFrom(project)
+            val moduleNameProvider = project.actionPackagingExtension.moduleName.usingModuleNameFrom(project)
             val nccScript = toolDir.map { it.file(NCC_SCRIPT_PATH_FROM_TOOL_DIR) }
 
             inputs.dir(project.jsBuildOutput.map { it.dir("node_modules") })

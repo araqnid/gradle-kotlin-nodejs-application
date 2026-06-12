@@ -31,7 +31,11 @@ class NodeJsApplicationPlugin : Plugin<Project> {
 
             val toolDir = project.layout.buildDirectory.dir(INSTALL_NCC)
             val distDir = project.layout.buildDirectory.dir(name)
-            val moduleNameProvider = project.nodeJsApplicationExtension.moduleName.usingDefaultFrom(project)
+            val moduleNameProvider = project.nodeJsApplicationExtension.moduleName.usingModuleNameFrom(project)
+            val isESModuleProvider =
+                project.nodeJsApplicationExtension.moduleKind.usingModuleKindFrom(project)
+                    .orElse("UNKNOWN")
+                    .map { it == "MODULE_ES" }
             val operations = project.injected<InjectedOperations>()
             val nccScript = toolDir.map { it.file(NCC_SCRIPT_PATH_FROM_TOOL_DIR) }
 
@@ -51,8 +55,13 @@ class NodeJsApplicationPlugin : Plugin<Project> {
             }
             script.set(nccScript)
             args.add("build")
-            args.addFrom(moduleNameProvider, project.jsBuildOutput) { moduleName, jsBuildOutput ->
-                add(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.js").toString())
+            args.addFrom(
+                moduleNameProvider,
+                isESModuleProvider,
+                project.jsBuildOutput
+            ) { moduleName, isESModule, jsBuildOutput ->
+                val extension = if (isESModule) "mjs" else "js"
+                add(jsBuildOutput.file("node_modules/$moduleName/kotlin/$moduleName.$extension").toString())
             }
             args.add("-o")
             args.add(distDir.map { it.asFile.toString() })
@@ -102,6 +111,12 @@ class NodeJsApplicationPlugin : Plugin<Project> {
                     logger.info("Used Node version $nodeVersion to run NCC")
                     distDir.get().file(".nvmrc").asFile.writeText(nodeVersion.get())
                 }
+                distDir.get().file("package.json").asFile.writeText(isESModuleProvider.map { isESModule ->
+                    if (isESModule)
+                        """{"type":"module","main":"index.mjs"}"""
+                    else
+                        """{}"""
+                }.get())
             }
         }
 
